@@ -1,0 +1,20 @@
+{
+  "sentences": {
+    "NACH0": {
+      "ColonyManagement": {
+        "ColonyManagementUI": {
+          "NoJobs": "No Jobs",
+		  "ColonyManagement": "Colony Management",
+		  "KillColonist": "Kill Colonist",
+		  "Job": "Job:",
+		  "Working": "Working:",
+		  "NotWorking": "Empty Jobs:",
+		  "SwapJob": "Move",
+		  "LblRecruit" : "Amount to recruit:",
+		  "Recruit": "Recruit",
+		  "Fire": "Fire"
+        }
+      }
+    }
+  }
+}
