@@ -1,0 +1,9 @@
+[{
+		"name" : "NACH0.player.ColonyManager",
+		"requires" : [
+		],
+		"results" : [
+			{"type":"NACH0.Types.ColonyManager"}
+		]
+	}
+]

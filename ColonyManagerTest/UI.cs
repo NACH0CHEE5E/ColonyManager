@@ -25,8 +25,6 @@ namespace Nach0.ColonyManagement
             if (!chat.Equals("?nach0manager"))
                 return false;
 
-            //Sends the UI to the player
-            //SendColonyUI.BuildMenu(player);
             Dictionary<string, JobCounts> jobCounts = SendColonyUI.GetJobCounts(player.ActiveColony);
             NetworkMenuManager.SendServerPopup(player, SendColonyUI.BuildMenu(player, jobCounts, false, string.Empty, 0));
 
@@ -43,36 +41,14 @@ namespace Nach0.ColonyManagement
         public List<IJob> TakenJobs { get; set; } = new List<IJob>();
     }
 
-    //draws ui
+    //ui drawing/button press
     [ModLoader.ModManager]
     public class SendColonyUI
     {
+        //on push button
         [ModLoader.ModCallback(ModLoader.EModCallbackType.OnPlayerPushedNetworkUIButton, "NACH0.ColonyManagement.UIButton.Pressed")]
         public static void PressButton(ButtonPressCallbackData data)
         {
-
-            /*if (data.ButtonIdentifier.Contains(Nach0Config.NAMESPACE + ".ResetPlayer."))
-            {
-                var id = data.ButtonIdentifier.Replace(Nach0Config.NAMESPACE + ".ResetPlayer.", "");
-
-                if (data.Player.ID.ToString() == id)
-                {
-                    BlockTracker.RewindPlayersBlocks(data.Player);
-                }
-                else
-                {
-                    foreach (var p in Players.PlayerDatabase)
-                        if (p.Key.ToString() == id)
-                        {
-                            BlockTracker.RewindPlayersBlocks(p.Value);
-                            break;
-                        }
-                }
-
-                NetworkMenuManager.CloseServerPopup(data.Player);
-                return;
-            }*/
-
             if ((!data.ButtonIdentifier.Contains(".RecruitButton") &&
                 !data.ButtonIdentifier.Contains(".FireButton") &&
                 !data.ButtonIdentifier.Contains(".SwapJob") &&
@@ -216,18 +192,7 @@ namespace Nach0.ColonyManagement
             }*/
         }
 
-        /*public static void SendUI(Players.Player player)
-        {
-            NetworkMenu guardUI = new NetworkMenu();
-            guardUI.Identifier = "ColonyUI";
-            guardUI.Width = 800;
-            guardUI.Height = 600;
-
-            NetworkMenuManager.SendServerPopup(player, guardUI);
-        }*/
-
         static readonly localization.LocalizationHelper _localizationHelper = new localization.LocalizationHelper("ColonyManagementUI");
-
 
         public static int GetCountValue(int countIndex)
         {
@@ -250,11 +215,13 @@ namespace Nach0.ColonyManagement
 
         public static NetworkMenu BuildMenu(Players.Player player, Dictionary<string, JobCounts> jobCounts, bool fired, string firedName, int firedCount)
         {
+            //UI Settings
             NetworkMenu menu = new NetworkMenu();
             menu.LocalStorage.SetAs("header", _localizationHelper.LocalizeOrDefault("ColonyManagement", player));
             menu.Width = 1000;
             menu.Height = 600;
 
+            //if fire colonist has been slected
             if (fired)
             {
                 var count = firedCount.ToString();
@@ -262,51 +229,33 @@ namespace Nach0.ColonyManagement
                 if (firedCount == int.MaxValue)
                     count = "all";
 
+                //kill colonist button
                 menu.Items.Add(new ButtonCallback(Nach0Config.BUTTON_NAMESPACE + ".KillFired", new LabelData(_localizationHelper.LocalizeOrDefault("KillColonist", player), UnityEngine.Color.black, UnityEngine.TextAnchor.MiddleCenter)));
             }
             else
-                //menu.Items.Add(new ButtonCallback(Nach0Config.NAMESPACE + ".PlayerDetails", new LabelData(_localizationHelper.GetLocalizationKey("PlayerDetails"), UnityEngine.Color.black, UnityEngine.TextAnchor.MiddleCenter)));
+            {
+
+            }
 
             menu.Items.Add(new Line());
 
-            /*if (!fired)
-            {
-                //ColonyState ps = ColonyState.GetColonyState(player.ActiveColony);
-
-                /*if (Configuration.GetorDefault("ColonistsRecruitment", true))
-                {
-                    player.ActiveColony.HappinessData.RecruitmentCostCalculator.GetCost(player.ActiveColony.HappinessData.CachedHappiness, player.ActiveColony, out float num);
-                    var cost = Configuration.GetorDefault("CompoundingFoodRecruitmentCost", 2) * ps.ColonistsBought;
-
-                    if (cost < 1)
-                        cost = 1;
-
-                    menu.Items.Add(new HorizontalSplit(new Label(new LabelData(_localizationHelper.GetLocalizationKey("RecruitmentCost"), UnityEngine.Color.black)),
-                                                       new Label(new LabelData((cost + num).ToString(), UnityEngine.Color.black))));
-                }*/
-
-                /*if (ps.CallToArmsEnabled)
-                    menu.Items.Add(new ButtonCallback(Nach0Config.NAMESPACE + ".CallToArms", new LabelData(_localizationHelper.GetLocalizationKey("DeactivateCallToArms"), UnityEngine.Color.black, UnityEngine.TextAnchor.MiddleCenter)));
-                else
-                    menu.Items.Add(new ButtonCallback(Nach0Config.NAMESPACE + ".CallToArms", new LabelData(_localizationHelper.GetLocalizationKey("ActivateCallToArms"), UnityEngine.Color.black, UnityEngine.TextAnchor.MiddleCenter)));
-            }*/
-
-
+            //Standard UI
+            //Header
             List<(IItem, int)> header = new List<(IItem, int)>();
 
-            header.Add((new Label(new LabelData(_localizationHelper.LocalizeOrDefault("Job", player), UnityEngine.Color.black)), 140));
+            header.Add((new Label(new LabelData(_localizationHelper.LocalizeOrDefault("Job", player), UnityEngine.Color.black)), 140)); //Job Title
 
             if (!fired)
             {
-                //header.Add((new Label(new LabelData("", UnityEngine.Color.black)), 140));
-
-                header.Add((new Label(new LabelData(_localizationHelper.LocalizeOrDefault("Working", player), UnityEngine.Color.black)), 140));
+                header.Add((new Label(new LabelData(_localizationHelper.LocalizeOrDefault("Working", player), UnityEngine.Color.black)), 140)); //Working amount title (only Shows if fired not selected)
             }
-            header.Add((new Label(new LabelData(_localizationHelper.LocalizeOrDefault("NotWorking", player), UnityEngine.Color.black)), 140));
+            header.Add((new Label(new LabelData(_localizationHelper.LocalizeOrDefault("NotWorking", player), UnityEngine.Color.black)), 140)); //not working amount title
             header.Add((new Label(new LabelData("", UnityEngine.Color.black)), 140));
             header.Add((new Label(new LabelData("", UnityEngine.Color.black)), 140));
 
             menu.Items.Add(new HorizontalRow(header));
+
+            //add jobs
             int jobCount = 0;
 
             foreach (var jobKvp in jobCounts)
@@ -321,7 +270,7 @@ namespace Nach0.ColonyManagement
 
                 if (!fired)
                 {
-                    //items.Add((new ButtonCallback(jobKvp.Key + ".JobDetailsButton", new LabelData(_localizationHelper.GetLocalizationKey("Details"), UnityEngine.Color.black, UnityEngine.TextAnchor.MiddleCenter)), 140));
+
                 }
 
                 items.Add((new Label(new LabelData(jobKvp.Value.TakenCount.ToString(), UnityEngine.Color.black)), 140));
@@ -346,12 +295,6 @@ namespace Nach0.ColonyManagement
 
             if (jobCount == 0)
                 menu.Items.Add(new Label(new LabelData(_localizationHelper.LocalizeOrDefault("NoJobs", player), UnityEngine.Color.black)));
-
-            //if (!fired && Configuration.GetorDefault("AllowPlayerToResetThemself", true))
-            //{
-            //    menu.Items.Add(new Line(UnityEngine.Color.black));
-            //    menu.Items.Add(new ButtonCallback(GameLoader.NAMESPACE + ".ResetPlayer." + player.ID, new LabelData(_localizationHelper.GetLocalizationKey("ResetPlayer"), UnityEngine.Color.black, UnityEngine.TextAnchor.MiddleCenter)));
-            //}
 
             return menu;
         }

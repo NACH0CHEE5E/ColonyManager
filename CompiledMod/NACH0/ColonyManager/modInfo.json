@@ -13,6 +13,16 @@
 			"relativePath" : "gamedata/locale/en-US.json",
 			"fileType" : "addOrOverrideLocalization",
 			"index" : 15000
+		},
+		{
+			"fileType": "addNewTypes",
+			"index" : 15000,
+			"relativePath": "gamedata/SpecialTypes.json"
+		},
+		{
+			"fileType" : "addOrReplacePlayerRecipes",
+			"index" : 15000,
+			"relativePath" : "gamedata/recipes/player.json"
 		}
 	],
 	"patchnotes": [
