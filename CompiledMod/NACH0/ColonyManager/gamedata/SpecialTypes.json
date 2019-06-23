@@ -4,7 +4,7 @@
 			"essential",
 			"aaa"
 		],
-		"icon": "./../textures/icons/ItemPlacer.png",
+		"icon": "./textures/icons/ColonyManager.png",
 		"maxStackSize": 1,
 		"isPlaceable" : false
 	}

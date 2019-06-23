@@ -54,10 +54,11 @@ namespace Nach0.ColonyManagement
                 !data.ButtonIdentifier.Contains(".SwapJob") &&
                 !data.ButtonIdentifier.Contains(".ColonyToolMainMenu") &&
                 !data.ButtonIdentifier.Contains(".KillFired") &&
-                !data.ButtonIdentifier.Contains(".CallToArms")) || data.Player.ActiveColony == null)
+                !data.ButtonIdentifier.Contains(".AutoRecruitment")) || data.Player.ActiveColony == null)
                 return;
 
             Dictionary<string, JobCounts> jobCounts = GetJobCounts(data.Player.ActiveColony);
+            Dictionary<Players.Player, string> AutoRecruit_Opt = new Dictionary<Players.Player, string>();
 
             if (data.ButtonIdentifier.Contains(".ColonyToolMainMenu"))
             {
@@ -185,11 +186,19 @@ namespace Nach0.ColonyManagement
                         NetworkMenuManager.SendServerPopup(data.Player, BuildMenu(data.Player, jobCounts, false, string.Empty, 0));
                     }
             }
-            /*else if (data.ButtonIdentifier.Contains(".CallToArms"))
+            else if (data.ButtonIdentifier.Contains(".AutoRecruitment"))
             {
-                AI.CalltoArms.ProcesssCallToArms(data.Player, data.Player.ActiveColony);
-                NetworkMenuManager.SendServerPopup(data.Player, BuildMenu(data.Player, jobCounts, false, string.Empty, 0));
-            }*/
+                if (AutoRecruit_Opt[data.Player].Equals("on"))
+                {
+                    AutoRecruit_Opt[data.Player] = "off";
+                    Chat.Send(data.Player, "<color=blue>Auto Recruitment is now " + AutoRecruit_Opt[data.Player] + "</color>");
+                }
+                else
+                {
+                    AutoRecruit_Opt[data.Player] = "on";
+                    Chat.Send(data.Player, "<color=blue>Auto Recruitment is now " + AutoRecruit_Opt[data.Player] + "</color>");
+                }
+            }
         }
 
         static readonly localization.LocalizationHelper _localizationHelper = new localization.LocalizationHelper("ColonyManagementUI");
@@ -231,10 +240,9 @@ namespace Nach0.ColonyManagement
 
                 //kill colonist button
                 menu.Items.Add(new ButtonCallback(Nach0Config.BUTTON_NAMESPACE + ".KillFired", new LabelData(_localizationHelper.LocalizeOrDefault("KillColonist", player), UnityEngine.Color.black, UnityEngine.TextAnchor.MiddleCenter)));
-            }
-            else
+            } else
             {
-
+                menu.Items.Add(new ButtonCallback(Nach0Config.BUTTON_NAMESPACE + ".AutoRecruitment", new LabelData(_localizationHelper.GetLocalizationKey("AutoRecruitment"), UnityEngine.Color.black, UnityEngine.TextAnchor.MiddleCenter)));
             }
 
             menu.Items.Add(new Line());

@@ -59,7 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="itemplacer.cs" />
+    <Compile Include="UIOpener.cs" />
     <Compile Include="localization.cs" />
     <Compile Include="UI.cs" />
     <Compile Include="Config.cs" />
